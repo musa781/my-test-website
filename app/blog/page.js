@@ -12,7 +12,7 @@ export default async function BlogList() {
 
   return (
     <div className="p-20">
-      <h1 className="text-4xl font-bold mb-8">Asli API wala Blog 🌐</h1>
+      <h1 className="text-4xl font-bold mb-8">Demo API Blog 🌐</h1>
       
       <div className="flex flex-col gap-4">
         {posts.map((post) => (
