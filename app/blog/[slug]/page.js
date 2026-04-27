@@ -4,7 +4,7 @@ export default async function BlogPost({ params }) {
   const resolvedParams = await params;
   const postId = resolvedParams.slug; 
 
-  // 2. Us specific ID ki post API se mangwa rahe hain
+  // 2. Us specific ID ki post API se mangwa rahe hain (REST API)
   const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
   const post = await res.json();
 

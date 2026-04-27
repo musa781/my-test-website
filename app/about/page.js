@@ -2,117 +2,100 @@ import React from 'react';
 
 export default function AboutPage() {
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden font-sans text-gray-100 py-20 px-6 sm:px-12">
+      {/* Animated Background Blobs (Same as Product page) */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 rounded-full bg-purple-600/40 blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[30rem] h-[30rem] rounded-full bg-rose-600/40 blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: "2s" }}></div>
+      <div className="absolute top-[20%] right-[10%] w-80 h-80 rounded-full bg-amber-500/30 blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: "4s" }}></div>
+      <div className="absolute bottom-[20%] left-[10%] w-72 h-72 rounded-full bg-teal-500/30 blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: "6s" }}></div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
         
         {/* Header Section */}
-        <div className="bg-indigo-600 px-8 py-10 text-white">
-          <h1 className="text-4xl font-extrabold tracking-tight">Muhammad Usama Sharif</h1>
-          <p className="text-xl mt-2 text-indigo-200 font-semibold">Full Stack Developer</p>
-          <div className="mt-4 flex flex-wrap gap-4 text-sm text-indigo-100">
-            <span>📍 Johr Town, Lahore</span>
-            <span>📧 sharifusama351@gmail.com</span>
-            <span>📞 +923079600970</span>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 mb-8 text-sm font-medium text-rose-300 backdrop-blur-sm">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-rose-500 animate-ping absolute"></span>
+            <span className="flex h-2.5 w-2.5 rounded-full bg-rose-400 relative"></span>
+            Developer Portfolio
           </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-400 to-fuchsia-600 mb-6 tracking-tighter drop-shadow-lg">
+            About Me 👨‍💻
+          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed">
+            Building scalable backend systems and premium Next.js experiences.
+          </p>
         </div>
 
-        <div className="px-8 py-10 space-y-12">
+        <div className="flex flex-col gap-8">
           
-          {/* Professional Summary */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-indigo-100 pb-2 mb-4">
-              Professional Summary
-            </h2>
-            <p className="text-gray-600 leading-relaxed text-lg">
-              Computer Science graduate seeking a job opportunity in Full Stack Development. 
-              Hands-on experience in building web-based and machine learning projects, integrating 
-              frontend with backend services, and working with modern JavaScript frameworks i.e ReactJs, 
-              Express, NodeJs, etc. Passionate about AI, NLP, and scalable full-stack systems.
-            </p>
-          </section>
-
-          {/* Work Experience */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-indigo-100 pb-2 mb-6">
-              Work Experience
-            </h2>
-            <div className="space-y-8">
-              {/* Job 1 */}
-              <div>
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-bold text-indigo-600">Backend Development Intern</h3>
-                  <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">July 2025 - Jan 2026</span>
-                </div>
-                <p className="text-lg font-semibold text-gray-800 mt-1">Soft Pulse</p>
-                <ul className="mt-3 list-disc list-inside text-gray-600 space-y-1">
-                  <li>Worked on Shopify apps with React-Based user interface.</li>
-                  <li>Created plugins with Remix (React-Router v7).</li>
-                  <li>Contributed to the design of new features and improvements for existing products.</li>
-                </ul>
+          {/* Intro Card */}
+          <div className="group relative bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 backdrop-blur-md overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+            <div className="relative z-10">
+              <h2 className="text-4xl font-bold text-white group-hover:text-amber-200 transition-colors duration-300">Muhammad Usama Sharif</h2>
+              <p className="text-xl text-rose-300 mt-2 font-medium tracking-wide">Backend Developer</p>
+              <div className="mt-5 flex flex-wrap gap-4 text-sm text-gray-400">
+                <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📍 Johr Town, Lahore</span>
+                <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📧 sharifusama351@gmail.com</span>
+                <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📞 +923079600970</span>
               </div>
-
-              {/* Job 2 */}
-              <div>
-                <div className="flex justify-between items-start">
-                  <h3 className="text-xl font-bold text-indigo-600">Web Developer Intern</h3>
-                  <span className="text-sm font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Jun 2024 - Aug 2024</span>
-                </div>
-                <p className="text-lg font-semibold text-gray-800 mt-1">VisaBridge</p>
-                <ul className="mt-3 list-disc list-inside text-gray-600 space-y-1">
-                  <li>Worked on React-based user interfaces and component-driven development.</li>
-                  <li>Integrated frontend components with backend APIs.</li>
-                  <li>Improved UI responsiveness and code structure.</li>
-                </ul>
-              </div>
+              <p className="text-gray-300 mt-6 leading-relaxed font-light text-lg">
+                Computer Science graduate seeking a job opportunity in Web Backend Development. Hands-on experience in building web-based and machine learning projects, integrating frontend with backend services, and working with modern JavaScript frameworks i.e ReactJs, Express, NodeJs, etc. Passionate about AI, NLP, and scalable full-stack systems.
+              </p>
             </div>
-          </section>
+          </div>
 
-          {/* Projects */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-indigo-100 pb-2 mb-6">
-              University Projects
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Project 1 */}
-              <div className="border border-gray-200 p-5 rounded-lg hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-indigo-600 text-lg">VisionFlow Plus (FYP)</h3>
-                <p className="text-sm text-gray-500 mb-2">Apr 2024 - Dec 2024</p>
-                <p className="text-gray-600 text-sm">Computer vision platform for training and testing custom ML models. Integrated multiple data formats using Python, OpenCV, FastAPI, and Node.js.</p>
+          {/* Experience Card */}
+          <div className="group relative bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 backdrop-blur-md">
+            <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-emerald-400 mb-8">Work Experience 💼</h2>
+            
+            <div className="mb-10 relative pl-6 border-l-2 border-white/10">
+              <div className="absolute w-3 h-3 bg-teal-400 rounded-full -left-[7px] top-2 shadow-[0_0_10px_#2dd4bf]"></div>
+              <h3 className="text-xl font-bold text-white">Backend Development Intern @ Soft Pulse</h3>
+              <p className="text-teal-200 text-sm mb-4 mt-1 tracking-wider">July 2025 - Jan 2026</p>
+              <ul className="text-gray-400 space-y-2 font-light">
+                <li>• Worked on Shopify apps with React-Based user interface.</li>
+                <li>• Created plugins with Remix (React-Router v7).</li>
+                <li>• Contributed to the design of new features.</li>
+              </ul>
+            </div>
+
+            <div className="relative pl-6 border-l-2 border-white/10">
+              <div className="absolute w-3 h-3 bg-emerald-400 rounded-full -left-[7px] top-2 shadow-[0_0_10px_#34d399]"></div>
+              <h3 className="text-xl font-bold text-white">Web Developer Intern @ VisaBridge</h3>
+              <p className="text-teal-200 text-sm mb-4 mt-1 tracking-wider">Jun 2024 - Aug 2024</p>
+              <ul className="text-gray-400 space-y-2 font-light">
+                <li>• Worked on React-based user interfaces and component-driven development.</li>
+                <li>• Integrated frontend components with backend APIs.</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Projects & Skills Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="group relative bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 backdrop-blur-md">
+              <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-rose-300 to-fuchsia-400 mb-6">Projects 🚀</h2>
+              <div className="mb-6 bg-white/5 p-5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                <h3 className="font-bold text-white text-lg mb-2">VisionFlow Plus (FYP)</h3>
+                <p className="text-gray-400 text-sm font-light leading-relaxed">Computer vision platform integrating Python, OpenCV, FastAPI, and Node.js.</p>
               </div>
-              
-              {/* Project 2 */}
-              <div className="border border-gray-200 p-5 rounded-lg hover:shadow-md transition-shadow">
-                <h3 className="font-bold text-indigo-600 text-lg">Fake News Detection</h3>
-                <p className="text-sm text-gray-500 mb-2">Feb 2024 - Apr 2024</p>
-                <p className="text-gray-600 text-sm">Built deep learning models to classify fake vs genuine news using NLP preprocessing and text classification techniques in Python.</p>
+              <div className="bg-white/5 p-5 rounded-xl border border-white/5 hover:border-white/10 transition-colors">
+                <h3 className="font-bold text-white text-lg mb-2">Fake News Detection</h3>
+                <p className="text-gray-400 text-sm font-light leading-relaxed">Deep learning models for NLP classification using Python.</p>
               </div>
             </div>
-          </section>
 
-          {/* Technical Skills */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-indigo-100 pb-2 mb-4">
-              Technical Skills
-            </h2>
-            <div className="flex flex-wrap gap-3">
-              {['Python', 'JavaScript', 'React.js', 'Node.js', 'Express', 'MongoDB', 'HTML/CSS/jQuery', 'Git & GitHub', 'Frontend & Backend Integration'].map((skill) => (
-                <span key={skill} className="bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-lg text-sm font-semibold">
-                  {skill}
-                </span>
-              ))}
+            <div className="group relative bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 backdrop-blur-md">
+              <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-orange-400 mb-6">Skills 🛠️</h2>
+              <div className="flex flex-wrap gap-3">
+                 {['Python', 'React.js', 'Node.js', 'MongoDB', 'Git/GitHub', 'Express', 'Next.js', 'Tailwind CSS'].map(skill => (
+                   <span key={skill} className="bg-white/5 px-4 py-2 rounded-xl text-gray-300 text-sm border border-white/10 hover:bg-white/20 hover:border-amber-300/50 hover:text-amber-200 transition-all cursor-default">
+                     {skill}
+                   </span>
+                 ))}
+              </div>
             </div>
-          </section>
-
-          {/* Education */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 border-b-2 border-indigo-100 pb-2 mb-4">
-              Academic History
-            </h2>
-            <div>
-              <h3 className="text-lg font-bold text-gray-800">Bachelor of Computer Science</h3>
-              <p className="text-indigo-600 font-medium">COMSATS University Islamabad, Wah Campus</p>
-            </div>
-          </section>
+          </div>
 
         </div>
       </div>
