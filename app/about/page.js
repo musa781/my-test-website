@@ -33,14 +33,14 @@ export default function AboutPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
             <div className="relative z-10">
               <h2 className="text-4xl font-bold text-white group-hover:text-amber-200 transition-colors duration-300">Muhammad Usama Sharif</h2>
-              <p className="text-xl text-rose-300 mt-2 font-medium tracking-wide">Backend Developer</p>
+              <p className="text-xl text-rose-300 mt-2 font-medium tracking-wide">Full Stack Developer</p>
               <div className="mt-5 flex flex-wrap gap-4 text-sm text-gray-400">
                 <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📍 Johr Town, Lahore</span>
                 <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📧 sharifusama351@gmail.com</span>
                 <span className="flex items-center gap-1 bg-white/5 px-4 py-2 rounded-full border border-white/10">📞 +923079600970</span>
               </div>
               <p className="text-gray-300 mt-6 leading-relaxed font-light text-lg">
-                Computer Science graduate seeking a job opportunity in Web Backend Development. Hands-on experience in building web-based and machine learning projects, integrating frontend with backend services, and working with modern JavaScript frameworks i.e ReactJs, Express, NodeJs, etc. Passionate about AI, NLP, and scalable full-stack systems.
+                Computer Science graduate seeking a job opportunity in Full Stack Web Development. Hands-on experience in building web-based and machine learning projects, integrating frontend with backend services, and working with modern JavaScript frameworks i.e ReactJs, Express, NodeJs, etc. Passionate about AI, NLP, and scalable full-stack systems.
               </p>
             </div>
           </div>
