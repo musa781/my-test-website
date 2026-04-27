@@ -1,6 +1,9 @@
 // app/products/page.js
 
 import ProductAction from "@/components/ProductAction";
+import LiveViewers from "@/components/LiveViewers";
+import QuantitySelector from "@/components/QuantitySelector";
+
 
 export default async function ShopifyProducts() {
   // 1. GraphQL Query: Hum Next.js ko bata rahe hain ke humein kya kya chahiye
@@ -113,6 +116,8 @@ export default async function ShopifyProducts() {
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
               <div className="relative z-10">
+                {/* 1. NAYA COMPONENT: Live Viewers */}
+                <LiveViewers />
                 <h2 className="text-3xl font-bold text-white mb-4 tracking-tight group-hover:text-rose-300 transition-colors duration-300 drop-shadow-sm">
                   {product.title}
                 </h2>
@@ -138,6 +143,8 @@ export default async function ShopifyProducts() {
                           {variant.price.currencyCode} {variant.price.amount}
                         </span>
                       </div>
+                      {/* 2. NAYA COMPONENT: Quantity Selector */}
+                      <QuantitySelector />
 
                       {/* YAHAN HUMNE APNA NAYA CLIENT COMPONENT RENDER KIYA HAI */}
                       <ProductAction
