@@ -3,7 +3,7 @@ import React from 'react';
 export default function AboutPage() {
   return (
     <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-grey-700 shadow-xl rounded-2xl overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
         
         {/* Header Section */}
         <div className="bg-indigo-600 px-8 py-10 text-white">
