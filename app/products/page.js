@@ -75,7 +75,7 @@ export default async function ShopifyProducts() {
             Live from Shopify
           </div>
           <h1 className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-400 to-fuchsia-600 mb-8 tracking-tighter drop-shadow-lg">
-            My Shopify Store <span className="inline-block hover:scale-110 hover:rotate-12 transition-transform duration-300">🛍️</span>
+            My Live Shopify Store <span className="inline-block hover:scale-110 hover:rotate-12 transition-transform duration-300">🛍️</span>
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
             Experience our premium collection with a breathtaking new design. Powered by Next.js and the Shopify Storefront API.
