@@ -2,6 +2,7 @@ import Link from "next/link";
 import "./globals.css"; // Ye line zaroori hai styling ke liye
 import { CartProvider } from "./CartContext";
 import CartIcon from "@/components/CartIcon";
+import CartDrawer from "@/components/CartDrawer";
 
 export default function RootLayout({ children }) {
   return (
@@ -35,6 +36,9 @@ export default function RootLayout({ children }) {
           <footer className="bg-gray-800 text-white text-center p-4 mt-10">
             <p>© 2026 Meri Next.js Website</p>
           </footer>
+
+          {/* Ye Drawer Ab Har Page Pe Automatically Nazar Aayega */} 
+          <CartDrawer />
         </CartProvider>
       </body>
     </html>
