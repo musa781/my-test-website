@@ -1,8 +1,9 @@
 // app/products/page.js
 
-import ProductAction from "@/components/ProductAction";
-import LiveViewers from "@/components/LiveViewers";
-import QuantitySelector from "@/components/QuantitySelector";
+// import ProductAction from "@/components/ProductAction";
+// import LiveViewers from "@/components/LiveViewers";
+// import QuantitySelector from "@/components/QuantitySelector";
+import ProductSearch from "@/components/ProductSearch";
 
 
 export default async function ShopifyProducts() {
@@ -105,59 +106,9 @@ export default async function ShopifyProducts() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {/* Products ko map kar rahe hain */}
-          {products.map(({ node: product }) => (
-            <div
-              key={product.id}
-              className="group relative bg-transparent p-8 rounded-[2rem] hover:bg-white/5 transition-all duration-500 hover:-translate-y-3 overflow-hidden flex flex-col justify-between"
-            >
-              {/* Glossy overlay effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+        {/* YAHAN HUMNE NAYA SEARCH COMPONENT LAGA DIYA HAI AUR SHOPIFY KA DATA 'initialProducts' KE ZARIYE PASS KAR DIYA HAI */}
+        <ProductSearch initialProducts={products} />
 
-              <div className="relative z-10">
-                {/* 1. NAYA COMPONENT: Live Viewers */}
-                <LiveViewers />
-                <h2 className="text-3xl font-bold text-white mb-4 tracking-tight group-hover:text-rose-300 transition-colors duration-300 drop-shadow-sm">
-                  {product.title}
-                </h2>
-                <p className="text-gray-300 text-sm leading-relaxed mb-8 line-clamp-3 font-light">
-                  {product.description}
-                </p>
-              </div>
-
-              <div className="mt-auto relative z-10">
-                <h3 className="text-xs font-semibold text-rose-200 uppercase tracking-[0.25em] mb-5">
-                  Available Variants
-                </h3>
-                <div className="flex flex-col gap-3">
-                  {/* Har product ke Variants (Sizes/Colors) ko map kar rahe hain */}
-                  {product.variants.edges.map(({ node: variant }) => (
-                    <div key={variant.id} 
-                    className="bg-white/5 backdrop-blur-md p-5 rounded-2xl flex flex-col border border-white/10 mt-3 hover:border-white/20 transition-colors">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-lg">
-                          {variant.title}
-                        </span>
-                        <span className="font-bold text-green-700">
-                          {variant.price.currencyCode} {variant.price.amount}
-                        </span>
-                      </div>
-                      {/* 2. NAYA COMPONENT: Quantity Selector */}
-                      <QuantitySelector />
-
-                      {/* YAHAN HUMNE APNA NAYA CLIENT COMPONENT RENDER KIYA HAI */}
-                      <ProductAction
-                        priceAmount={variant.price.amount}
-                        currency={variant.price.currencyCode}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
