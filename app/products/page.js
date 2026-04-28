@@ -1,9 +1,9 @@
 // app/products/page.js
 
-// import ProductAction from "@/components/ProductAction";
-// import LiveViewers from "@/components/LiveViewers";
-// import QuantitySelector from "@/components/QuantitySelector";
+
 import ProductSearch from "@/components/ProductSearch";
+import NewsletterForm from '@/components/NewsletterForm';
+
 
 
 export default async function ShopifyProducts() {
@@ -109,7 +109,12 @@ export default async function ShopifyProducts() {
         {/* YAHAN HUMNE NAYA SEARCH COMPONENT LAGA DIYA HAI AUR SHOPIFY KA DATA 'initialProducts' KE ZARIYE PASS KAR DIYA HAI */}
         <ProductSearch initialProducts={products} />
 
+        <NewsletterForm />
+
+        
+
+
       </div>
     </div>
-  );
+  );  
 }
