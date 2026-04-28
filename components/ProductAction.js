@@ -1,9 +1,11 @@
 "use client"; 
 
 import { useState, useEffect } from 'react';
+import { useCart } from '@/app/CartContext';
 
 export default function ProductAction({ priceAmount, currency }) {
   const [selectedMode, setSelectedMode] = useState('Full Price');
+  const { addToCart } = useCart();
 
   const numericPrice = parseFloat(priceAmount);
   const pledgeAdvance = (numericPrice * 0.20).toFixed(2);
@@ -52,6 +54,12 @@ export default function ProductAction({ priceAmount, currency }) {
             <span className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-md border border-white/5 w-fit">80% remaining on delivery</span>
           </div>
         )}
+        <button
+          onClick={() => addToCart()} // Ab context wala function chalega
+          className="mt-6 w-full py-4 bg-gradient-to-r from-white to-gray-200 text-black font-black rounded-full hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-shadow active:scale-95"
+        >
+          ✨ ADD TO CART
+        </button>
       </div>
     </div>
   );
