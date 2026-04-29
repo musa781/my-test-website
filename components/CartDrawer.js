@@ -1,11 +1,12 @@
 "use client";
 import { useCart } from '@/app/CartContext';
+import PaymentModal from './PaymentModal'; 
 import { useState } from 'react';
 
 export default function CartDrawer() {
   const { isCartOpen, closeCart, cartItems } = useCart(); // Ab humne cartItems utha liye
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Total Bill Calculate Karna
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
   
@@ -24,6 +25,10 @@ export default function CartDrawer() {
       if (data.checkoutUrl) {
         // User ko browser se seedha Shopify ke payment page par bhej dena
         window.open(data.checkoutUrl, '_blank');
+        setIsLoading(false);  //  Loading ko foran false kar dein
+        setIsModalOpen(true); // Modal khol do jo polling shuru kar dega
+        closeCart(); // Cart drawer ko background mein band kar do
+
       } else {
         alert("Checkout link generate karne mein masla aaya.");
         setIsLoading(false);
@@ -91,6 +96,7 @@ export default function CartDrawer() {
 
         </div>
       </div>
+      <PaymentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }

@@ -38,6 +38,11 @@ export function CartProvider({ children }) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
+  // 1. Naya function banayein
+  const clearCart = () => {
+    setCartItems([]); // Memory ko wapis khali kar diya
+  };
+
   // 3. Cart Icon ke number ke liye total items calculate karna
   const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
 
@@ -50,6 +55,7 @@ export function CartProvider({ children }) {
         isCartOpen,
         openCart,
         closeCart,
+        clearCart,  //  Yeh function bhi bahar access kiya ja sakta hai
       }}
     >
       {children}

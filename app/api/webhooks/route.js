@@ -1,30 +1,33 @@
 // app/api/webhooks/route.js
 import { NextResponse } from 'next/server';
 
-// Webhooks hamesha POST request bhejte hain
 export async function POST(request) {
   try {
-    // 1. Webhook ka payload (data) receive karein
-    const payload = await request.json();
+    // 1. Shopify jo data bhejega, hum use read kar rahe hain
+    const body = await request.json();
+    
+    // 2. Terminal mein print kar ke dekhenge ke kya data aaya hai
+    console.log("🔔 DING DING! WEBHOOK RECEIVED!");
+    console.log("✅ Payment successful for Order ID:", body.id);
+    console.log("💰 Total Amount Paid:", body.total_price);
 
-    // 2. Check karein ke event kaunsa hai
-    if (payload.event === 'pledge.successful') {
-      const { customerId, amount, mode } = payload.data;
-      
-      console.log(`🎉 New Pledge Received!`);
-      console.log(`Customer: ${customerId}, Amount: ${amount}, Mode: ${mode}`);
+    // 3. 🌟 ASAL BACKEND LOGIC YAHAN AATI HAI 🌟
+    // Yahan hum aam tor par apni database (MongoDB / SQL) mein ja kar 
+    // is user ke order ka status "Pending" se "Paid" kar dete hain.
+    // For Demo: Hum isay simply server console mein print kar rahe hain.
 
-      // Yahan hum apna database update karenge...
-      // E.g., await db.campaign.updateStatus(customerId, 'pledged');
-
-      // 3. Sender ko wapis 200 OK bhejein taake usay pata chale humne data receive kar liya hai
-      return NextResponse.json({ message: 'Webhook received successfully' }, { status: 200 });
-    }
-
-    return NextResponse.json({ message: 'Event ignored' }, { status: 200 });
+    // 4. Shopify ko batana ke "Bhai humein message mil gaya hai, shukriya!"
+    // Agar hum 200 OK wapis nahi bhejenge, to Shopify bar bar webhook bhejta rahega.
+    return NextResponse.json(
+      { message: "Webhook received successfully" }, 
+      { status: 200 }
+    );
 
   } catch (error) {
-    console.error('Webhook error:', error);
-    return NextResponse.json({ error: 'Webhook handler failed' }, { status: 500 });
+    console.error("Webhook processing error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" }, 
+      { status: 500 }
+    );
   }
 }
