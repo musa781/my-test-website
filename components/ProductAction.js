@@ -1,41 +1,63 @@
-"use client"; 
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useCart } from '@/app/CartContext';
+import { useState, useEffect } from "react";
+import { useCart } from "@/app/CartContext";
 
-export default function ProductAction({ priceAmount, currency }) {
-  const [selectedMode, setSelectedMode] = useState('Full Price');
+export default function ProductAction({ priceAmount, currency, variantId, title }) {
+  const [selectedMode, setSelectedMode] = useState("Full Price");
   const { addToCart } = useCart();
 
   const numericPrice = parseFloat(priceAmount);
-  const pledgeAdvance = (numericPrice * 0.20).toFixed(2);
+  const pledgeAdvance = (numericPrice * 0.2).toFixed(2);
 
   useEffect(() => {
-    console.log(`Lifecycle Hook Triggered: User switched to [${selectedMode}] mode.`);
+    console.log(
+      `Lifecycle Hook Triggered: User switched to [${selectedMode}] mode.`,
+    );
   }, [selectedMode]);
+
+  // Is function ko button ke onClick mein lagayenge
+  const handleAddClick = () => {
+    // 1. Asal price calculate karna (Agar Pledge hai to 20%, warna full)
+    const numericPrice = parseFloat(priceAmount);
+    const finalPrice =
+      selectedMode === "pledge" ? numericPrice * 0.2 : numericPrice;
+
+    // 2. Object banana jo Cart mein jayega
+    const itemData = {
+      id: variantId, //  asal mein variant ID hogi
+      title: title || "Premium Product", // Isko bhi dynamic karenge
+      price: finalPrice,
+      mode: selectedMode,
+      currency: currency,
+    };
+
+    // 3. Global Radio par broadcast kar dena
+    addToCart(itemData);
+  };
 
   return (
     <div className="mt-4 pt-4 border-t border-white/10">
       <div className="flex flex-wrap gap-3 mb-5">
         {/* Full Price Button */}
-        <button 
-          onClick={() => setSelectedMode('Full Price')}
+        <button
+          onClick={() => setSelectedMode("Full Price")}
           className={`px-5 py-2 text-sm rounded-full transition-all duration-300 ${
-            selectedMode === 'Full Price' 
-              ? 'bg-gradient-to-r from-amber-400 to-rose-500 text-black font-extrabold shadow-[0_0_20px_rgba(244,63,94,0.4)] hover:scale-105' 
-              : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white'
+            selectedMode === "Full Price"
+              ? "bg-gradient-to-r from-amber-400 to-rose-500 text-black font-extrabold shadow-[0_0_20px_rgba(244,63,94,0.4)] hover:scale-105"
+              : "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
           }`}
         >
           Full Price
         </button>
 
         {/* Pledge Button */}
-        <button 
-          onClick={() => setSelectedMode('Pledge Mode')}
+        <button
+          onClick={() => setSelectedMode("Pledge Mode")}
           className={`px-5 py-2 text-sm rounded-full transition-all duration-300 ${
-            selectedMode === 'Pledge Mode' 
-              ? 'bg-gradient-to-r from-teal-400 to-emerald-500 text-black font-extrabold shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-105' 
-              : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white'
+            selectedMode === "Pledge Mode"
+              ? "bg-gradient-to-r from-teal-400 to-emerald-500 text-black font-extrabold shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-105"
+              : "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
           }`}
         >
           Pledge Mode (20%)
@@ -44,21 +66,31 @@ export default function ProductAction({ priceAmount, currency }) {
 
       {/* Dynamic Price Render */}
       <div className="p-4 bg-white/5 rounded-xl border border-white/10 backdrop-blur-sm">
-        {selectedMode === 'Full Price' ? (
+        {selectedMode === "Full Price" ? (
           <p className="text-gray-300 flex items-center">
-            Total Payable: <span className="font-black text-rose-400 text-xl ml-2">{currency} {numericPrice}</span>
+            Total Payable:{" "}
+            <span className="font-black text-rose-400 text-xl ml-2">
+              {currency} {numericPrice}
+            </span>
           </p>
         ) : (
           <div className="text-gray-300 flex flex-col sm:flex-row sm:items-center gap-2">
-            <span>Advance: <span className="font-black text-teal-400 text-xl ml-1">{currency} {pledgeAdvance}</span></span>
-            <span className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-md border border-white/5 w-fit">80% remaining on delivery</span>
+            <span>
+              Advance:{" "}
+              <span className="font-black text-teal-400 text-xl ml-1">
+                {currency} {pledgeAdvance}
+              </span>
+            </span>
+            <span className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-md border border-white/5 w-fit">
+              80% remaining on delivery
+            </span>
           </div>
         )}
         <button
-          onClick={() => addToCart()} // Ab context wala function chalega
-          className="mt-6 w-full py-4 bg-gradient-to-r from-white to-gray-200 text-black font-black rounded-full hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-shadow active:scale-95"
+          onClick={handleAddClick}
+          className="w-full mt-4 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md"
         >
-          ✨ ADD TO CART
+          Add to Cart 🛍️
         </button>
       </div>
     </div>

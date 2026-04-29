@@ -84,7 +84,7 @@ export default function ProductSearch({ initialProducts }) {
                         <span className="font-bold text-green-400">{variant.price.currencyCode} {variant.price.amount}</span>
                       </div>
                       <QuantitySelector />
-                      <ProductAction priceAmount={variant.price.amount} currency={variant.price.currencyCode} />
+                      <ProductAction priceAmount={variant.price.amount} currency={variant.price.currencyCode} variantId={variant.id} title={product.title} />
                     </div>
                   ))}
                 </div>
