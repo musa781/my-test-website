@@ -1,62 +1,43 @@
 // app/api/webhooks/route.js
 import { NextResponse } from 'next/server';
+import nodemailer from 'nodemailer'; // Nodemailer import kar liya
 
 export async function POST(request) {
   try {
     const body = await request.json();
     console.log("🔔 DING DING! WEBHOOK RECEIVED FOR ORDER:", body.id);
 
-    // 1. Order ke har item ko check karein
     for (const item of body.line_items) {
-      
-      // Shopify mein customAttributes 'properties' ban jate hain
       const isPledgeProp = item.properties?.find(p => p.name === "_isPledge" && p.value === "true");
       const variantIdProp = item.properties?.find(p => p.name === "_originalVariantId");
 
       if (isPledgeProp && variantIdProp) {
         console.log(`🎯 Pledge Item Found: ${item.title}`);
-        console.log(`⏳ Creating Remaining Balance Invoice...`);
-
+        
         const originalVariantId = variantIdProp.value;
         const customerEmail = body.email || body.contact_email;
 
-        // 2. Naya Draft Order Banane ki Query
+        // Draft Order Banane Ki Query
         const draftQuery = `
           mutation draftOrderCreate($input: DraftOrderInput!) {
             draftOrderCreate(input: $input) {
-              draftOrder {
-                id
-                invoiceUrl
-              }
-              userErrors {
-                field
-                message
-              }
+              draftOrder { id invoiceUrl }
             }
           }
         `;
 
-        // 3. Asli Product add karo aur $2 discount laga do (Deposit minus)
         const draftVariables = {
           input: {
             email: customerEmail,
-            lineItems: [
-              {
+            lineItems: [{
                 variantId: originalVariantId,
                 quantity: item.quantity,
-                // $2.00 ka discount (Kyunke user pehle hi de chuka hai)
-                appliedDiscount: {
-                  description: "Pledge Deposit Paid",
-                  value: 2.00,
-                  valueType: "FIXED_AMOUNT"
-                }
-              }
-            ],
+                appliedDiscount: { description: "Pledge Deposit Paid", value: 2.00, valueType: "FIXED_AMOUNT" }
+            }],
             tags: ["REMAINING-BALANCE-INVOICE"]
           }
         };
 
-        // 4. Shopify Admin API ko Request bhej do
         const adminRes = await fetch(
           `https://${process.env.SHOPIFY_STORE_DOMAIN}/admin/api/2024-01/graphql.json`,
           {
@@ -72,11 +53,48 @@ export async function POST(request) {
         const adminJson = await adminRes.json();
 
         if (adminJson.data?.draftOrderCreate?.draftOrder) {
+           const invoiceUrl = adminJson.data.draftOrderCreate.draftOrder.invoiceUrl;
            console.log("✅ BOOM! Remaining Balance Invoice Created!");
-           console.log("🔗 Invoice URL:", adminJson.data.draftOrderCreate.draftOrder.invoiceUrl);
-           // Yahan aap is URL ko apne Database mein bhi save kar sakte hain
-        } else {
-           console.error("❌ Failed to create invoice:", JSON.stringify(adminJson.data?.draftOrderCreate?.userErrors));
+
+           // ---------------------------------------------------------
+           // 📧 EMAIL BHEJNE WALA CODE YAHAN SE SHURU HOTA HAI
+           // ---------------------------------------------------------
+           if (customerEmail) {
+             const transporter = nodemailer.createTransport({
+               service: 'gmail',
+               auth: {
+                 user: process.env.EMAIL_USER,
+                 pass: process.env.EMAIL_PASS,
+               },
+             });
+
+             const mailOptions = {
+               from: `"PledgePop Campaigns" <${process.env.EMAIL_USER}>`,
+               to: customerEmail,
+               subject: 'Action Required: Your PledgePop Remaining Balance Invoice',
+               html: `
+                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eaeaeb; border-radius: 10px;">
+                   <h2 style="color: #333;">Thank you for your Pledge! 🎉</h2>
+                   <p style="color: #555; font-size: 16px;">
+                     Your <strong>$2.00 deposit</strong> for <strong>${item.title}</strong> has been successfully received.
+                   </p>
+                   <p style="color: #555; font-size: 16px;">
+                     As promised, here is the secure invoice for your remaining balance. Your item is secured!
+                   </p>
+                   <div style="text-align: center; margin: 30px 0;">
+                     <a href="${invoiceUrl}" style="background-color: #000; color: #fff; padding: 14px 28px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">View & Pay Remaining Balance</a>
+                   </div>
+                   <p style="color: #999; font-size: 14px;">If you have any questions, simply reply to this email.</p>
+                 </div>
+               `,
+             };
+
+             await transporter.sendMail(mailOptions);
+             console.log("✉️ Success! Invoice Email sent to:", customerEmail);
+           } else {
+             console.log("⚠️ No customer email found in the webhook payload.");
+           }
+           // ---------------------------------------------------------
         }
       }
     }
