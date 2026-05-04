@@ -5,10 +5,19 @@ import { useCart } from "@/app/CartContext";
 
 export default function ProductAction({ priceAmount, currency, variantId, title }) {
   const [selectedMode, setSelectedMode] = useState("Full Price");
+  
+  // Nayi State: Quantity ab yahan manage hogi taake Cart ko exact items mil sakein
+  const [quantity, setQuantity] = useState(1);
+  
   const { addToCart } = useCart();
 
   const numericPrice = parseFloat(priceAmount);
-  const pledgeAdvance = (numericPrice * 0.2).toFixed(2);
+  
+  // Senior Requirement: Fixed $2 Deposit (Pledge Advance)
+  const pledgeAdvance = 2.00; 
+  
+  // Remaining balance calculate kiya taake UI mein dikha sakein
+  const remainingBalance = (numericPrice - pledgeAdvance).toFixed(2);
 
   useEffect(() => {
     console.log(
@@ -16,30 +25,27 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
     );
   }, [selectedMode]);
 
-  // Is function ko button ke onClick mein lagayenge
   const handleAddClick = () => {
-    // 1. Asal price calculate karna (Agar Pledge hai to 20%, warna full)
-    const numericPrice = parseFloat(priceAmount);
-    const finalPrice =
-      selectedMode === "pledge" ? numericPrice * 0.2 : numericPrice;
+    // BUG FIX: Exact string "Pledge Mode" use ki hai
+    const finalPrice = selectedMode === "Pledge Mode" ? pledgeAdvance : numericPrice;
 
-    // 2. Object banana jo Cart mein jayega
     const itemData = {
-      id: variantId, //  asal mein variant ID hogi
-      title: title || "Premium Product", // Isko bhi dynamic karenge
+      id: variantId, 
+      title: title || "Premium Product", 
       price: finalPrice,
       mode: selectedMode,
       currency: currency,
+      quantity: quantity // Quantity cart mein add kar di gayi
     };
 
-    // 3. Global Radio par broadcast kar dena
     addToCart(itemData);
   };
 
   return (
     <div className="mt-4 pt-4 border-t border-white/10">
+      
+      {/* Mode Selector Buttons */}
       <div className="flex flex-wrap gap-3 mb-5">
-        {/* Full Price Button */}
         <button
           onClick={() => setSelectedMode("Full Price")}
           className={`px-5 py-2 text-sm rounded-full transition-all duration-300 ${
@@ -51,7 +57,6 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
           Full Price
         </button>
 
-        {/* Pledge Button */}
         <button
           onClick={() => setSelectedMode("Pledge Mode")}
           className={`px-5 py-2 text-sm rounded-full transition-all duration-300 ${
@@ -60,8 +65,29 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
               : "bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
           }`}
         >
-          Pledge Mode (20%)
+          Pledge Mode ($2 Deposit)
         </button>
+      </div>
+
+      {/* Integrated Quantity Selector UI */}
+      <div className="flex items-center gap-4 mb-4">
+        <span className="text-gray-300 text-sm">Quantity:</span>
+        <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-full px-3 py-1">
+          <button 
+            className="text-gray-300 hover:text-white text-xl font-bold px-2 disabled:opacity-50 transition"
+            onClick={() => setQuantity(prev => (prev > 1 ? prev - 1 : 1))}
+            disabled={quantity === 1}
+          >
+            -
+          </button>
+          <span className="text-white font-bold min-w-[20px] text-center">{quantity}</span>
+          <button 
+            className="text-gray-300 hover:text-white text-xl font-bold px-2 transition"
+            onClick={() => setQuantity(prev => prev + 1)}
+          >
+            +
+          </button>
+        </div>
       </div>
 
       {/* Dynamic Price Render */}
@@ -70,7 +96,7 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
           <p className="text-gray-300 flex items-center">
             Total Payable:{" "}
             <span className="font-black text-rose-400 text-xl ml-2">
-              {currency} {numericPrice}
+              {currency} {numericPrice.toFixed(2)}
             </span>
           </p>
         ) : (
@@ -78,11 +104,11 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
             <span>
               Advance:{" "}
               <span className="font-black text-teal-400 text-xl ml-1">
-                {currency} {pledgeAdvance}
+                {currency} {pledgeAdvance.toFixed(2)}
               </span>
             </span>
             <span className="text-xs text-gray-400 bg-white/5 px-2 py-1 rounded-md border border-white/5 w-fit">
-              80% remaining on delivery
+              {currency} {remainingBalance} remaining on delivery
             </span>
           </div>
         )}
@@ -93,6 +119,7 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
           Add to Cart 🛍️
         </button>
       </div>
+      
     </div>
   );
 }
