@@ -1,6 +1,8 @@
 // app/api/webhooks/route.js
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer'; // Nodemailer import kar liya
+import nodemailer from 'nodemailer';
+import connectToDatabase from '@/lib/mongodb'; // 👈 DB Connection Import
+import Pledge from '@/models/Pledge';          // 👈 Model Import
 
 export async function POST(request) {
   try {
@@ -17,7 +19,6 @@ export async function POST(request) {
         const originalVariantId = variantIdProp.value;
         const customerEmail = body.email || body.contact_email;
 
-        // Draft Order Banane Ki Query
         const draftQuery = `
           mutation draftOrderCreate($input: DraftOrderInput!) {
             draftOrderCreate(input: $input) {
@@ -56,9 +57,7 @@ export async function POST(request) {
            const invoiceUrl = adminJson.data.draftOrderCreate.draftOrder.invoiceUrl;
            console.log("✅ BOOM! Remaining Balance Invoice Created!");
 
-           // ---------------------------------------------------------
-           // 📧 EMAIL BHEJNE WALA CODE YAHAN SE SHURU HOTA HAI
-           // ---------------------------------------------------------
+           // --- EMAIL CODE ---
            if (customerEmail) {
              const transporter = nodemailer.createTransport({
                service: 'gmail',
@@ -91,10 +90,30 @@ export async function POST(request) {
 
              await transporter.sendMail(mailOptions);
              console.log("✉️ Success! Invoice Email sent to:", customerEmail);
-           } else {
-             console.log("⚠️ No customer email found in the webhook payload.");
            }
-           // ---------------------------------------------------------
+
+           // 🌟 --------------------------------------------------------- 🌟
+           // 🌟 NAYA DATABASE CODE 🌟
+           // 🌟 --------------------------------------------------------- 🌟
+           try {
+             await connectToDatabase(); // DB se connect karo
+             
+             // Naya record banao
+             const newPledge = new Pledge({
+               shopifyOrderId: body.id.toString(),
+               customerEmail: customerEmail || "No Email",
+               productTitle: item.title,
+               invoiceUrl: invoiceUrl,
+               // depositPaid aur status default use ho jayenge jo Schema mein define kiye hain
+             });
+
+             await newPledge.save(); // MongoDB mein save kar do
+             console.log("💾 SUCCESS! Data MongoDB mein save ho gaya!");
+           } catch (dbError) {
+             console.error("⚠️ MongoDB Save Error:", dbError);
+           }
+           // 🌟 --------------------------------------------------------- 🌟
+
         }
       }
     }
