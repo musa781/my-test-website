@@ -19,7 +19,6 @@ export default function RootLayout({ children }) {
               <Link href="/about">About</Link>
               <Link href="/blog">Blog</Link>
               <Link href="/products">Products</Link>
-              <Link href="/dashboard">Dashboard</Link>
             </div>
 
             {/* Right Side: Cart Icon */}
