@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react';
 import ProductAction from './ProductAction';
 import LiveViewers from './LiveViewers';
 
-// 🌟 NAYA: 'pledgeCounts' prop receive kar rahe hain 🌟
 export default function ProductSearch({ initialProducts, pledgeCounts = {} }) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -55,11 +54,12 @@ export default function ProductSearch({ initialProducts, pledgeCounts = {} }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {filteredProducts.map(({ node: product }) => {
             
-            // 🌟 NAYA CODE: Progress Bar Logic 🌟
-            // Database se is product ka current pledge count nikal rahe hain
+            // Progress Bar & Milestone Logic
             const currentPledges = pledgeCounts[product.title] || 0;
-            const targetPledges = 50; // Aap apna target yahan set kar sakte hain (e.g., 50)
+            const targetPledges = 1; // Milestone Target (e.g., 50 pledges)
             const percentage = Math.min(Math.round((currentPledges / targetPledges) * 100), 100);
+            const isMilestoneReached = currentPledges >= targetPledges;
+            const pledgesNeeded = targetPledges - currentPledges;
 
             return (
               <div key={product.id} className="group relative bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 backdrop-blur-md overflow-hidden flex flex-col justify-between">
@@ -75,8 +75,8 @@ export default function ProductSearch({ initialProducts, pledgeCounts = {} }) {
                     {product.description}
                   </p>
 
-                  {/* 🌟 NAYA CODE: Progress Bar UI 🌟 */}
-                  <div className="mb-8 bg-black/40 p-4 rounded-2xl border border-white/5">
+                  {/* Campaign Status (Progress Bar) */}
+                  <div className="mb-4 bg-black/40 p-4 rounded-2xl border border-white/5">
                     <div className="flex justify-between items-end mb-2">
                       <span className="text-xs font-semibold text-rose-300 uppercase tracking-wider">Campaign Status</span>
                       <span className="text-sm font-bold text-white">{currentPledges} / {targetPledges} Pledges</span>
@@ -87,11 +87,35 @@ export default function ProductSearch({ initialProducts, pledgeCounts = {} }) {
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-2 text-right">
-                      {percentage}% Funded
-                    </p>
                   </div>
-                  {/* 🌟 ------------------------ 🌟 */}
+
+                  {/* 🌟 NAYA CODE: MILESTONE UI BOX 🌟 */}
+                  <div className={`mb-8 p-4 rounded-2xl border backdrop-blur-sm transition-all duration-500 ${
+                    isMilestoneReached 
+                      ? 'bg-gradient-to-r from-amber-500/20 to-yellow-500/10 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.2)]' 
+                      : 'bg-white/5 border-white/10 border-dashed'
+                  }`}>
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl mt-1 animate-pulse">
+                        {isMilestoneReached ? '🔓' : '🔒'}
+                      </div>
+                      <div>
+                        <h4 className={`text-sm font-bold uppercase tracking-wider ${
+                          isMilestoneReached ? 'text-yellow-400' : 'text-gray-400'
+                        }`}>
+                          {isMilestoneReached ? 'Stretch Goal Unlocked!' : 'Locked Milestone'}
+                        </h4>
+                        <p className={`text-xs mt-1.5 leading-relaxed ${
+                          isMilestoneReached ? 'text-yellow-100/80' : 'text-gray-500'
+                        }`}>
+                          {isMilestoneReached 
+                            ? 'Special Edition Carbon Fiber finish is now included for ALL backers! 🎉' 
+                            : `Unlock the "Special Edition Carbon Fiber" finish. Only ${pledgesNeeded} more ${pledgesNeeded === 1 ? 'pledge' : 'pledges'} needed!`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* 🌟 ------------------------------ 🌟 */}
 
                 </div>
 
