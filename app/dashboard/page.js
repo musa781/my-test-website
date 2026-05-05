@@ -2,6 +2,9 @@
 import connectToDatabase from '@/lib/mongodb';
 import Pledge from '@/models/Pledge';
 
+// 🌟 BASS YEH EK NAYI LINE ADD KARNI HAI 🌟
+export const dynamic = 'force-dynamic';
+
 // Next.js Server Component mein hum direct async function use kar sakte hain
 export default async function DashboardPage() {
   // 1. Database se connect karein

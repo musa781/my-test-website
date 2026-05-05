@@ -27,7 +27,7 @@ export async function POST(request) {
         const updatedPledge = await Pledge.findOneAndUpdate(
           { shopifyOrderId: originalOrderId },
           { status: 'Completed' },
-          { new: true } // Yeh return mein updated data dega
+          { returnDocument: 'after' } // Yeh return mein updated data dega
         );
 
         if (updatedPledge) {
