@@ -35,7 +35,7 @@ export async function POST(request) {
                 quantity: item.quantity,
                 appliedDiscount: { description: "Pledge Deposit Paid", value: 2.00, valueType: "FIXED_AMOUNT" }
             }],
-            tags: ["REMAINING-BALANCE-INVOICE"]
+            tags: ["REMAINING-BALANCE-INVOICE",`OriginalOrderId:${body.id}`]
           }
         };
 
