@@ -4,13 +4,13 @@ import PaymentModal from './PaymentModal';
 import { useState } from 'react';
 
 export default function CartDrawer() {
-  const { isCartOpen, closeCart, cartItems } = useCart(); // Ab humne cartItems utha liye
+  const { isCartOpen, closeCart, cartItems } = useCart(); 
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Total Bill Calculate Karna
+  
   const cartTotal = cartItems.reduce((total, item) => total + (item.price * item.qty), 0);
   
-  // Ye naya function Shopify Checkout trigger karega
+  // 🌟 UPDATE: Wapis Backend API par shift kar diya taake $2 wali logic run ho sakay!
   const handleCheckout = async () => {
     setIsLoading(true);
     try {
@@ -23,12 +23,10 @@ export default function CartDrawer() {
       const data = await res.json();
 
       if (data.checkoutUrl) {
-        // User ko browser se seedha Shopify ke payment page par bhej dena
         window.open(data.checkoutUrl, '_blank');
-        setIsLoading(false);  //  Loading ko foran false kar dein
-        setIsModalOpen(true); // Modal khol do jo polling shuru kar dega
-        closeCart(); // Cart drawer ko background mein band kar do
-
+        setIsLoading(false);  
+        setIsModalOpen(true); 
+        closeCart(); 
       } else {
         alert("Checkout link generate karne mein masla aaya.");
         setIsLoading(false);
@@ -60,10 +58,8 @@ export default function CartDrawer() {
               <p className="text-gray-500 text-center mt-10">Your cart is empty.</p>
             ) : (
               <div className="flex flex-col gap-4">
-                {/* 🌟 Asal Magic Yahan Hai! Loop laga kar items dikhana */}
                 {cartItems.map((item, index) => (
                   <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm relative">
-                    {/* Item Mode Badge (Pledge ya Full) */}
                     <span className="absolute top-2 right-2 text-[10px] uppercase font-bold text-white bg-blue-600 px-2 py-1 rounded">
                       {item.mode}
                     </span>
@@ -73,6 +69,12 @@ export default function CartDrawer() {
                     <p className="text-blue-600 font-bold mt-1">
                       {item.currency} {item.price}
                     </p>
+
+                    {item.addons && item.addons.length > 0 && (
+                      <div className="mt-2 inline-block bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded-md border border-purple-200">
+                        + {item.addons.length} Add-on{item.addons.length > 1 ? 's' : ''} Included
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -80,11 +82,12 @@ export default function CartDrawer() {
           </div>
 
           <div className="border-t pt-4">
-            <div className="flex justify-between items-center mb-4 font-bold text-lg text-gray-800">
-              <span>Total:</span>
+            <div className="flex justify-between items-center mb-1 font-bold text-lg text-gray-800">
+              <span>Subtotal:</span>
               <span>USD {cartTotal.toFixed(2)}</span>
             </div>
-            {/* Naya Button Loading State ke sath */}
+            <p className="text-[10px] text-gray-400 mb-4 text-right">*Add-ons price included at final checkout</p>
+
             <button 
               onClick={handleCheckout}
               disabled={isLoading || cartItems.length === 0}

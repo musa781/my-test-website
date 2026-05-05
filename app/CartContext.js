@@ -3,48 +3,88 @@
 
 import { createContext, useContext, useState } from "react";
 
-// 1. Context Create Karna
 const CartContext = createContext();
 
-// 2. Provider Component (Jo poori app ko wrap karega)
 export function CartProvider({ children }) {
-  // 1. Ab hamari memory ek Array [] hai, number 0 nahi.
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // 2. Naya addToCart function jo poora 'product' ka object receive karega
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      // Check karte hain ke kya ye item pehle se cart mein hai?
+      // Add-ons ki list ko string mein convert kar rahe hain taake asani se match kar sakein
+      const addonsString = JSON.stringify(product.addons || []);
+
+      // Check karte hain ke kya exact same product, same mode aur SAME Add-ons ke sath pehle se cart mein hai?
       const existingItem = prevItems.find(
-        (item) => item.id === product.id && item.mode === product.mode,
+        (item) =>
+          item.id === product.id &&
+          item.mode === product.mode &&
+          JSON.stringify(item.addons || []) === addonsString,
       );
 
+      // ProductAction component se aane wali quantity ko use kar rahe hain (default 1)
+      const qtyToAdd = product.quantity || 1;
+
       if (existingItem) {
-        // Agar hai, to sirf uski quantity (qty) barha do
         return prevItems.map((item) =>
-          item.id === product.id && item.mode === product.mode
-            ? { ...item, qty: item.qty + 1 }
+          item.id === product.id &&
+          item.mode === product.mode &&
+          JSON.stringify(item.addons || []) === addonsString
+            ? { ...item, qty: item.qty + qtyToAdd }
             : item,
         );
       }
-      // Agar nahi hai, to naya item list mein add kar do (qty: 1 ke sath)
-      return [...prevItems, { ...product, qty: 1 }];
+      return [...prevItems, { ...product, qty: qtyToAdd }];
     });
 
-    setIsCartOpen(true); // Drawer khol do
+    setIsCartOpen(true);
   };
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  // 1. Naya function banayein
   const clearCart = () => {
-    setCartItems([]); // Memory ko wapis khali kar diya
+    setCartItems([]);
   };
 
-  // 3. Cart Icon ke number ke liye total items calculate karna
   const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
+
+  // 🌟 NAYA FUNCTION: Checkout URL Banane ke liye 🌟
+  const generateCheckoutUrl = () => {
+    let urlParts = [];
+
+    cartItems.forEach((item) => {
+      // 1. Main Product Variant ID (e.g., 'gid://shopify/ProductVariant/123456' se sirf '123456' nikalna)
+      const mainVariantId = item.id.includes("/")
+        ? item.id.split("/").pop()
+        : item.id;
+      urlParts.push(`${mainVariantId}:${item.qty}`);
+
+      // 2. Agar is item ke sath Add-ons hain, toh unhe bhi URL mein add karna
+      if (item.addons && item.addons.length > 0) {
+        item.addons.forEach((addonId) => {
+          const cleanAddonId = addonId.includes("/")
+            ? addonId.split("/").pop()
+            : addonId;
+          urlParts.push(`${cleanAddonId}:${item.qty}`);
+        });
+      }
+    });
+
+    // Aapke .env file se Shopify Store Domain uthana
+    const domain =
+      process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN ||
+      process.env.SHOPIFY_STORE_DOMAIN;
+
+    // Agar domain variable mein mojood nahi hai toh safety ke liye
+    if (!domain) {
+      console.error(
+        "Shopify Store Domain is missing in environment variables!",
+      );
+    }
+
+    return `https://${domain}/cart/${urlParts.join(",")}`;
+  };
 
   return (
     <CartContext.Provider
@@ -55,7 +95,8 @@ export function CartProvider({ children }) {
         isCartOpen,
         openCart,
         closeCart,
-        clearCart,  //  Yeh function bhi bahar access kiya ja sakta hai
+        clearCart,
+        generateCheckoutUrl, // 👈 Naya function context mein expose kar diya
       }}
     >
       {children}
@@ -63,7 +104,6 @@ export function CartProvider({ children }) {
   );
 }
 
-// 3. Custom Hook (Taake data asani se use ho sake)
 export function useCart() {
   return useContext(CartContext);
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useCart } from "@/app/CartContext";
 
-export default function ProductAction({ priceAmount, currency, variantId, title }) {
+export default function ProductAction({ priceAmount, currency, variantId, title, selectedAddons = [] }) {
   const [selectedMode, setSelectedMode] = useState("Full Price");
   
   // Nayi State: Quantity ab yahan manage hogi taake Cart ko exact items mil sakein
@@ -35,7 +35,8 @@ export default function ProductAction({ priceAmount, currency, variantId, title 
       price: finalPrice,
       mode: selectedMode,
       currency: currency,
-      quantity: quantity // Quantity cart mein add kar di gayi
+      quantity: quantity, // Quantity cart mein add kar di gayi
+      addons: selectedAddons // 🌟 NAYA: Selected Add-ons ko cart payload mein bhej rahe hain 🌟
     };
 
     addToCart(itemData);

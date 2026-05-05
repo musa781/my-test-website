@@ -1,15 +1,13 @@
 // app/products/page.js
 
-
 import ProductSearch from "@/components/ProductSearch";
-import NewsletterForm from '@/components/NewsletterForm';
-import connectToDatabase from '@/lib/mongodb'; // 👈 Naya Import: MongoDB Connection
-import Pledge from '@/models/Pledge';          // 👈 Naya Import: Pledge Model
-
-
+import NewsletterForm from "@/components/NewsletterForm";
+import connectToDatabase from "@/lib/mongodb"; // 👈 Naya Import: MongoDB Connection
+import Pledge from "@/models/Pledge"; // 👈 Naya Import: Pledge Model
 
 export default async function ShopifyProducts() {
   // 1. GraphQL Query: Hum Next.js ko bata rahe hain ke humein kya kya chahiye
+  // 🌟 NAYA CODE: GraphQL Query mein "addOns" ka izafa kiya gaya hai 🌟
   const query = `
     {
       products(first: 9) {
@@ -23,6 +21,25 @@ export default async function ShopifyProducts() {
                 node {
                   id
                   title
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      addOns: products(first: 3, query: "tag:addon") {
+        edges {
+          node {
+            id
+            title
+            variants(first: 1) {
+              edges {
+                node {
+                  id
                   price {
                     amount
                     currencyCode
@@ -71,27 +88,25 @@ export default async function ShopifyProducts() {
   }
 
   const products = json.data.products.edges;
+  const addOnsList = json.data.addOns ? json.data.addOns.edges : []; // 👈 YEH LINE ADD KAREIN
 
   // 🌟 NAYA CODE: MONGODB SE PLEDGES COUNT KARNA 🌟
   await connectToDatabase();
-  
+
   // Aggregate use kar ke har product ke total pledges nikal rahe hain
   const pledgeData = await Pledge.aggregate([
-    { $group: { _id: "$productTitle", count: { $sum: 1 } } }
+    { $group: { _id: "$productTitle", count: { $sum: 1 } } },
   ]);
 
   // Data ko asaan format mein convert kar rahe hain (e.g., { "The Draft Snowboard": 5 })
   const pledgeCounts = {};
-  pledgeData.forEach(item => {
-    // Webhook mein naam "Pledge Deposit: The Draft Snowboard" tha, 
+  pledgeData.forEach((item) => {
+    // Webhook mein naam "Pledge Deposit: The Draft Snowboard" tha,
     // hum "Pledge Deposit: " hata rahe hain taake Shopify product title se exactly match ho jaye.
     const cleanTitle = item._id.replace("Pledge Deposit: ", "").trim();
     pledgeCounts[cleanTitle] = item.count;
   });
   // 🌟 ---------------------------------------- 🌟
-
-
-
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden font-sans text-gray-100 py-20 px-6 sm:px-12">
@@ -130,14 +145,14 @@ export default async function ShopifyProducts() {
         </div>
 
         {/* 🌟 YAHAN HUMNE NAYA 'pledgeCounts' PROP PASS KIYA HAI 🌟 */}
-        <ProductSearch initialProducts={products} pledgeCounts={pledgeCounts} />
+        <ProductSearch
+          initialProducts={products}
+          pledgeCounts={pledgeCounts}
+          addOnsList={addOnsList}
+        />
 
         <NewsletterForm />
-
-        
-
-
       </div>
     </div>
-  );  
+  );
 }
