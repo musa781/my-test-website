@@ -4,6 +4,7 @@ import { CartProvider } from "./CartContext";
 import CartIcon from "@/components/CartIcon";
 import CartDrawer from "@/components/CartDrawer";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function RootLayout({ children }) {
   return (
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
           <main className="min-h-screen">{children}</main>
 
           <Analytics />
+          <SpeedInsights />
 
           {/* Ye Footer Hai */}
           <footer className="bg-gray-800 text-white text-center p-4 mt-10">
