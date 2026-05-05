@@ -3,6 +3,7 @@ import "./globals.css"; // Ye line zaroori hai styling ke liye
 import { CartProvider } from "./CartContext";
 import CartIcon from "@/components/CartIcon";
 import CartDrawer from "@/components/CartDrawer";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function RootLayout({ children }) {
   return (
@@ -40,6 +41,7 @@ export default function RootLayout({ children }) {
           {/* Ye Drawer Ab Har Page Pe Automatically Nazar Aayega */} 
           <CartDrawer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
