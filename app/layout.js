@@ -3,6 +3,7 @@ import "./globals.css"; // Ye line zaroori hai styling ke liye
 import { CartProvider } from "./CartContext";
 import CartIcon from "@/components/CartIcon";
 import CartDrawer from "@/components/CartDrawer";
+import { Analytics } from "@vercel/analytics/next"
 
 export default function RootLayout({ children }) {
   return (
@@ -31,6 +32,8 @@ export default function RootLayout({ children }) {
 
           {/* Ye {children} wo jagah hai jahan aapke alag alag pages (Home, About) fit honge */}
           <main className="min-h-screen">{children}</main>
+
+          <Analytics />
 
           {/* Ye Footer Hai */}
           <footer className="bg-gray-800 text-white text-center p-4 mt-10">
