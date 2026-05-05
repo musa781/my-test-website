@@ -3,6 +3,8 @@
 
 import ProductSearch from "@/components/ProductSearch";
 import NewsletterForm from '@/components/NewsletterForm';
+import connectToDatabase from '@/lib/mongodb'; // 👈 Naya Import: MongoDB Connection
+import Pledge from '@/models/Pledge';          // 👈 Naya Import: Pledge Model
 
 
 
@@ -10,7 +12,7 @@ export default async function ShopifyProducts() {
   // 1. GraphQL Query: Hum Next.js ko bata rahe hain ke humein kya kya chahiye
   const query = `
     {
-      products(first: 6) {
+      products(first: 9) {
         edges {
           node {
             id
@@ -70,6 +72,27 @@ export default async function ShopifyProducts() {
 
   const products = json.data.products.edges;
 
+  // 🌟 NAYA CODE: MONGODB SE PLEDGES COUNT KARNA 🌟
+  await connectToDatabase();
+  
+  // Aggregate use kar ke har product ke total pledges nikal rahe hain
+  const pledgeData = await Pledge.aggregate([
+    { $group: { _id: "$productTitle", count: { $sum: 1 } } }
+  ]);
+
+  // Data ko asaan format mein convert kar rahe hain (e.g., { "The Draft Snowboard": 5 })
+  const pledgeCounts = {};
+  pledgeData.forEach(item => {
+    // Webhook mein naam "Pledge Deposit: The Draft Snowboard" tha, 
+    // hum "Pledge Deposit: " hata rahe hain taake Shopify product title se exactly match ho jaye.
+    const cleanTitle = item._id.replace("Pledge Deposit: ", "").trim();
+    pledgeCounts[cleanTitle] = item.count;
+  });
+  // 🌟 ---------------------------------------- 🌟
+
+
+
+
   return (
     <div className="min-h-screen bg-black relative overflow-hidden font-sans text-gray-100 py-20 px-6 sm:px-12">
       {/* Animated Background Blobs for that "Impressive Mesh Gradient" look */}
@@ -106,8 +129,8 @@ export default async function ShopifyProducts() {
           </p>
         </div>
 
-        {/* YAHAN HUMNE NAYA SEARCH COMPONENT LAGA DIYA HAI AUR SHOPIFY KA DATA 'initialProducts' KE ZARIYE PASS KAR DIYA HAI */}
-        <ProductSearch initialProducts={products} />
+        {/* 🌟 YAHAN HUMNE NAYA 'pledgeCounts' PROP PASS KIYA HAI 🌟 */}
+        <ProductSearch initialProducts={products} pledgeCounts={pledgeCounts} />
 
         <NewsletterForm />
 
